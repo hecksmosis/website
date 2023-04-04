@@ -13,7 +13,7 @@
 
 <main>
 	<Navbar {sections} />
-	<form method="post" action="?/login">
+	<form method="post" action="?/register">
 		<section class="mt-lg-4 mt-md-3 mt-sm-1 gradient-custom">
 			<div class="container py-5 h-100">
 				<div class="row d-flex justify-content-center align-items-center h-100">
