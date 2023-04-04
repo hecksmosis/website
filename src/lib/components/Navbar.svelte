@@ -5,9 +5,9 @@
 		name: string;
 		href: string;
 		show: boolean;
-		active: boolean;
-		method: string | null;
-		fn: SubmitFunction;
+		active?: boolean;
+		method?: string | null;
+		fn?: SubmitFunction;
 	}[] = [];
 
 	// If the method is null set it to GET
