@@ -1,6 +1,18 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import { webSocketServer } from './sockets/viteWSPlugin';
+import type { UserConfig } from 'vite';
+import dotenv from 'dotenv';
 
-export default defineConfig({
-	plugins: [sveltekit()]
-});
+dotenv.config();
+
+const config: UserConfig = {
+	server: {
+		port: 3027
+	},
+	preview: {
+		port: 3027
+	},
+	plugins: [sveltekit(), webSocketServer]
+};
+
+export default config;

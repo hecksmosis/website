@@ -31,6 +31,20 @@
 
 	const uploadAvatar = async () => {
 		try {
+			const {
+				data: { session }
+			} = await supabaseClient.auth.getSession();
+
+			const { data } = await supabaseClient
+				.from('profiles')
+				.select(`avatar_url`)
+				.eq('id', session?.user.id)
+				.single();
+
+			if (data?.avatar_url) {
+				await supabaseClient.storage.from('avatars').remove(data?.avatar_url);
+			}
+
 			uploading = true;
 
 			if (!files || files.length === 0) {
@@ -39,7 +53,9 @@
 
 			const file = files[0];
 			const fileExt = file.name.split('.').pop();
-			url = `${Math.random()}.${fileExt}`;
+			const fname =
+				Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+			url = `${fname}.${fileExt}`;
 
 			let { error } = await supabaseClient.storage.from('avatars').upload(url, file);
 
@@ -60,12 +76,12 @@
 	$: if (url) downloadImage(url);
 </script>
 
-<div>
+<div class="flex flex-row">
 	{#if avatarUrl}
 		<img
 			src={avatarUrl}
 			alt={avatarUrl ? 'Avatar' : 'No image'}
-			class="avatar image"
+			class="m-2 rounded-md"
 			style="height: {size}em; width: {size}em;"
 		/>
 	{:else}
@@ -73,9 +89,12 @@
 	{/if}
 	<input type="hidden" name="avatarUrl" value={url} />
 
-	<div style="width: {size}em;">
-		<label class="button primary block" for="single">
-			{uploading ? 'Uploading ...' : 'Upload'}
+	<div class="w-[{size}em] mt-4 flex-col">
+		<label
+			class="m-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+			for="single"
+		>
+			{uploading ? 'Uploading ...' : 'Upload image'}
 		</label>
 		<input
 			style="visibility: hidden; position:absolute;"
