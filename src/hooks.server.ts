@@ -20,6 +20,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 	};
 	event.locals.session = await getSession();
 
+	const getAdmin = async () => {
+		const { data: profile } = await event.locals.supabase
+			.from('profiles')
+			.select(`role`)
+			.eq('id', event.locals.session?.user.id)
+			.single();
+		return profile?.role === 'admin';
+	};
+	event.locals.isAdmin = await getAdmin();
+
 	// Modify the above code to match any route in the array protected_routes
 	if (protected_routes.some((route) => event.url.pathname.startsWith(route))) {
 		if (!event.locals.session) {

@@ -5,6 +5,7 @@ declare global {
 		interface Locals {
 			supabase: SupabaseClient;
 			session: Session | null;
+			isAdmin: boolean;
 		}
 
 		interface PageData {

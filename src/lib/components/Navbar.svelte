@@ -1,27 +1,25 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { Section } from '$lib/interfaces';
-
-	export let title: string = 'Kake';
-	export let icon_src: string = '';
-	export let sections: Section[] = [];
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
+	import { sections, title } from '$lib/stores/pageSettings';
+
+	export let icon_src: string = '';
 
 	// If the method is null set it to GET
-	sections.forEach((section) => {
-		if (section.method === null) {
-			section.method = 'GET';
-		}
+	$sections.map((section) => {
+		if (section.method === null) section.method = 'GET';
 	});
 
+	let notesObject: Section;
 	// the BASE section is used to set the href of the page title
-	let notesObject = sections.filter((section) => section.name === 'BASE')[0];
-	if (notesObject !== undefined) delete sections[0];
-
+	$: {
+		notesObject = $sections.filter((section) => section.name === 'BASE')[0];
+		if (notesObject !== undefined) delete $sections[0];
+	}
 	let button_sections: Section[], sections_listed: Section[];
 	$: {
-		sections.forEach((section) => {
+		$sections.forEach((section) => {
 			if (section.href == $page.url.pathname) {
 				section.active = true;
 			} else {
@@ -29,23 +27,23 @@
 			}
 		});
 
-		button_sections = sections.filter((section) => section.show && section.method === 'POST');
-		sections_listed = sections.filter((section) => section.show && section.method !== 'POST');
+		button_sections = $sections.filter((section) => section.show && section.method === 'POST');
+		sections_listed = $sections.filter((section) => section.show && section.method !== 'POST');
 	}
 	let fixNavbar: boolean = true;
 </script>
 
 <nav
-	class="bg-white dark:bg-gray-900 w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600 h-16"
+	class="bg-white dark:bg-zinc-900 w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600 h-16"
 	class:fixed={fixNavbar}
 >
 	<div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-		<a href="https://flowbite.com/" class="flex items-center">
+		<a href={notesObject?.href ?? '/'} class="flex items-center">
 			{#if icon_src != ''}
-				<img src="https://flowbite.com/docs/images/logo.svg" class="h-8 mr-3" alt="Logo" />
+				<img src={icon_src} class="h-8 mr-3" alt="Logo" />
 			{/if}
 			<span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-				>{title}</span
+				>{$title}</span
 			>
 		</a>
 		<div class="flex md:order-2">
@@ -53,7 +51,7 @@
 				<form action={button.href} use:enhance={button.fn} method="POST">
 					<button
 						type="submit"
-						class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						class="text-white bg-zinc-900 hover:bg-zinc-950 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-zinc-800 dark:hover:bg-zinc-950 dark:focus:ring-blue-800"
 						>{button.name}</button
 					>
 				</form>
@@ -85,15 +83,15 @@
 			id="navbar-sticky"
 		>
 			<ul
-				class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+				class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-zinc-800 md:dark:bg-zinc-900 dark:border-gray-700"
 			>
 				{#each sections_listed as section}
 					<li>
 						<a
 							href={section.href}
 							class={section.active
-								? 'block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500'
-								: 'block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'}
+								? 'block py-2 pl-3 pr-4 text-white bg-green-700 rounded md:bg-transparent md:text-green-700 md:px-1 md:py-0 md:dark:text-green-500'
+								: 'block py-2 pl-3 pr-4 text-green-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:px-1 md:py-0 md:dark:hover:text-green-500 md:dark:hover:bg-green-950 dark:text-white dark:hover:bg-green-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'}
 							>{section.name}</a
 						>
 					</li>

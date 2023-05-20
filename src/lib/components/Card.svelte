@@ -5,7 +5,7 @@
 </script>
 
 <div
-	class="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+	class="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-zinc-800 dark:border-zinc-700"
 >
 	<a href={btnHref}>
 		<h5
