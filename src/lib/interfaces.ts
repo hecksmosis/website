@@ -9,5 +9,11 @@ interface Section {
 	method?: string | null;
 	fn?: SubmitFunction;
 }
+interface Message {
+	from: string;
+	message: string;
+	time: string;
+	room: string;
+}
 
-export type { Section };
+export type { Section, Message };
